@@ -58,17 +58,20 @@ header #diff option {
 
 /* MAIN */
 main {
-    height: calc(100vh - 100px);
+    height: calc(100vh - 200px);
     background: linear-gradient(90deg, #00C9FF 0%, #92FE9D 100%);
 
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
+
+/* GRID-BOX */
 main #grid-box {
-    height: calc(80vh - 100px);
-    width: calc(80vh - 100px);
+    height: calc(80vh - 200px);
+    width: calc(80vh - 200px);
     opacity: 0;
 
     display: flex;
@@ -106,4 +109,18 @@ main #grid-box .cell.selected.bomb {
 main #grid-box .cell span {
     font-size: 1.5rem;
     color: inherit;
+}
+
+
+/* FOOTER */
+footer {
+    height: 100px;
+    background-color: white;
+}
+
+footer #message-box {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

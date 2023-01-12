@@ -10,6 +10,12 @@ function createRandomNum (min, max) {
 function createBombArray (bombNum, cellNum) {
     //creo l'array
     const bombArray = [];
+    //controllo che il numero di celle sia maggiore del numero di bombe
+    if (cellNum < bombNum) {
+        console.log('il numero di bombe non può essere maggiore del numero di celle');
+        return bombArray;
+    }
+
     //genero un numero casuale un tot di volte e se non è già presente lo metto nell'array
     for (let i = 1; i <= bombNum; i++){
         let ranNumber;
@@ -24,7 +30,7 @@ function createBombArray (bombNum, cellNum) {
 
 
 //per generare una cella con un indice all'interno
-function createCell(index, cellNumber, bombs) {
+function createCell(index, cellNumber) {
     //creo una cella
     const cell = document.createElement('div');
     //assegno allacella la classe cell
@@ -37,31 +43,8 @@ function createCell(index, cellNumber, bombs) {
     span.innerHTML = index;
     //metto lo span nella cella
     cell.append(span);
-    //aggiungo un event listener alla cella
-    cell.addEventListener ('click',
-        function() {
-            //se non è già selezionata
-            if (!(this.classList.contains('selected'))) {
-                //la seleziono
-                this.classList.add('selected');
-                //se non contiene una bomba la coloro di verde
-                if (!(bombs.includes(index))) {
-                    this.classList.add('safe');
-                }
-                else {
-                    //altrimenti la coloro di rosso
-                    this.classList.add('bomb');
-                }
-
-
-            }
-            else {
-
-            }
-        }
-    )
-    //metto la cella nella grid box
-    gridBox.append(cell);
+    
+    return cell;
 }
 
 //----------------------------------------------------------------------------
@@ -75,21 +58,78 @@ const gridBox = document.getElementById('grid-box');
 //vado a prendere la select
 const select = document.getElementById('diff');
 
+//vado a prendere la message box
+const messageBox = document.getElementById('message-box');
+
+//creo una flag per determinare se il gioco è finito
+let gameEnd = false;
+
+//creo un contatore di punti
+let pointCounter = 0;
+
+//decido il numero di bombe
+const bombNum = 16;
+
 //quando clicco sul bottone
 playButton.addEventListener ('click',
     function () {
-        //svuoto la grid-box
+        //inizializzo il gioco
         gridBox.innerHTML = '';
-        //vado a prendere il valore della select
+        gameEnd = false;
+        pointCounter = 0;
+        messageBox.innerHTML = "";
+
+        //vado a prendere il valore della select che contiene il numero di celle
         const selectInput = parseInt(select.value);
+
         //genero l'array con le bombe
-        const bombArray = createBombArray (16, selectInput);
-        //genero le celle
+        const bombArray = createBombArray (bombNum, selectInput);
+
+        //genero le celle e a ciascuna assegno un evento al click
         for (let i = 1; i <= selectInput; i++) {
-            createCell(i, selectInput, bombArray);
+            //genero la cella
+            const cell = createCell(i, selectInput);
+
+            //aggiungo un event listener alla cella
+            cell.addEventListener ('click',
+                function() {
+                    //se non è già selezionata e il gioco non è finito
+                    if ((!(this.classList.contains('selected'))) && (gameEnd == false)) {
+                        //la seleziono
+                        this.classList.add('selected');
+                        //se non contiene una bomba
+                        if (!(bombArray.includes(i))) {
+                            //la coloro di verde
+                            this.classList.add('safe');
+                            //incremento di uno il punteggio
+                            pointCounter += 1;
+                            //scrivo il punteggio
+                            messageBox.innerHTML = 'Punteggio: ' + pointCounter;
+                            //se ho raggiunto il punteggio massimo
+                            if (pointCounter ==  selectInput - bombNum) {
+                                //termino la partita
+                                gameEnd = true;
+                                //comunico che l'utente ha vinto
+                                messageBox.innerHTML = "HAI VINTO! Il tuo punteggio è " + pointCounter + ". Premi di nuovo PLAY per fare un'altra partita";
+                            }
+                        }
+                        else {
+                            //altrimenti la coloro di rosso
+                            this.classList.add('bomb');
+                            //mi segno che la partita è terminata
+                            gameEnd = true;
+                            //comunico che l'utente ha perso
+                            messageBox.innerHTML = "HAI PERSO! Il tuo punteggio è " + pointCounter + ". Premi di nuovo PLAY per fare un'altra partita";
+                        }
+                    }
+                }
+            )
+            //aggiungo la cella alla grid box
+            gridBox.append(cell);
         }
+
         //rendo visibile la grid-box
         gridBox.classList.add('visible');
-
     }
 )
+
