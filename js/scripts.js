@@ -6,6 +6,7 @@ function createRandomNum (min, max) {
     return randomNum;
 }
 
+
 // per creare un array con un tot di numeri casuali che non si ripetono
 function createBombArray (bombNum, cellNum) {
     //creo l'array
@@ -15,7 +16,6 @@ function createBombArray (bombNum, cellNum) {
         console.log('il numero di bombe non può essere maggiore del numero di celle');
         return bombArray;
     }
-
     //genero un numero casuale un tot di volte e se non è già presente lo metto nell'array
     for (let i = 1; i <= bombNum; i++){
         let ranNumber;
